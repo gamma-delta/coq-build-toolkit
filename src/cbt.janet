@@ -5,6 +5,23 @@
 
 (use ./cbt/globals)
 
+(import spork/path)
+
+(defn build-metadata
+  ```
+  Write down build metadata specific to your computer here.
+
+  If you are worried about your ability to make PRs to another person's mod without changing this value all the time, don't worry!
+  Use `git add -p .` and you can selectively add parts of your files,
+  so that the new build metadata stays on your local copy but isn't put into the PR.
+
+  If you're worried about your user name leaking, create a `secrets.janet` file,
+  define the metadata in there, `gitignore` it, and import it here.
+  ```
+  [&named qud-dlls qud-mods-folder]
+  (put *cbt* :qud-dlls qud-dlls)
+  (put *cbt* :qud-mods-folder qud-mods-folder))
+
 (defn declare-mod
   ```
   Declare a mod with the given information. Please only call this once.
@@ -46,9 +63,7 @@
   ```
   [dir]
   (put *cbt* :build-dir
-       (if (= (string/slice dir -1) "/")
-         (string/slice dir 0 -2)
-         dir)))
+       (path/normalize dir)))
 
 (defn set-resources-dir
   ```
@@ -57,9 +72,7 @@
   ```
   [dir]
   (put *cbt* :resources-dir
-       (if (= (string/slice dir -1) "/")
-         (string/slice dir 0 -2)
-         dir)))
+       (path/normalize dir)))
 
 (defn generate-file
   ```
