@@ -92,7 +92,7 @@
   ```
   [path func &opt formatting]
   (default formatting (xml/default-formatting))
-  (generate-file path (fn [] (xml/write (func)))))
+  (generate-file path (fn [] (xml/write (func) formatting))))
 
 (defn set-debug-output
   "Turn on or off higher debugging output"

@@ -61,7 +61,5 @@
                     (*cbt* :qud-mods-folder)
                     (manifest :id)))
   (dbg "installing mod to %s" mod-target)
-  (if (fs/exists? mod-target)
-    (fs/recreate-directories mod-target)
-    (os/mkdir mod-target))
+  (fs/recreate-directories mod-target)
   (copy-tree build-dir mod-target))

@@ -28,5 +28,5 @@
   See: https://wiki.cavesofqud.com/wiki/Modding:Colors_%26_Object_Rendering
   ```
   [fg &opt bg]
-  (string fg "&"
-          (if bg ("^" bg))))
+  (string "&" fg
+          (if bg ;["^" bg]))))
