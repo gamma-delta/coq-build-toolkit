@@ -1,8 +1,8 @@
 (import ./cbt/xml :as xml :export true)
-(import ./cbt/color-table :as color-table :export true)
-(import ./cbt/render :as render :export true)
-(import ./cbt/cli :as cli)
+(import ./cbt/colors :as colors :export true)
+(import ./cbt/xml-helpers/objects :as xml-helpers/objects)
 
+(import ./cbt/cli :as cli)
 (use ./cbt/globals)
 
 (import spork/path)
@@ -88,9 +88,10 @@
 (defn generate-xml
   ```
   Stage an XML file to be generated via the specified function.
-  This just wraps the function with xml/write and sends it to generate-file
+  This just wraps the function with xml/write and sends it to generate-file.
   ```
-  [path func]
+  [path func &opt formatting]
+  (default formatting (xml/default-formatting))
   (generate-file path (fn [] (xml/write (func)))))
 
 (defn set-debug-output

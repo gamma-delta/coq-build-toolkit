@@ -2,8 +2,7 @@
 # and by "based on" i mean "significant code theft"
 
 (defn default-formatting []
-  {:indent 2
-   :capitalize-attrs true})
+  {:indent 2})
 
 (defn escape [str]
   (let [str (string str)]
@@ -14,14 +13,6 @@
          (string/replace-all "'" "&#x27;")
          (string/replace-all "/" "&#x2F;")
          (string/replace-all "%" "&#37;"))))
-
-(defn capitalize [s]
-  (def s (string s))
-  (if (empty? s)
-    s
-    (string
-      (string/ascii-upper (string/slice s 0 1))
-      (string/slice s 1))))
 
 (defn- write-indent [formatting depth write!]
   (if-let [indent (get formatting :indent nil)]
@@ -53,9 +44,7 @@
   (var count 0)
   (loop [[k v] :pairs attrs :after (++ count)]
     # this is confusing. writing: k="v"
-    (write! (if (get formatting :capitalize-attrs)
-              (capitalize k)
-              k))
+    (write! k)
     (write! "=\"")
     (write! (escape v))
     (write! "\"")
