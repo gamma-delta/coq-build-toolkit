@@ -29,4 +29,4 @@
   ```
   [fg &opt bg]
   (string "&" fg
-          (if bg ;["^" bg])))
+          ;(if bg ["^" bg] [])))
