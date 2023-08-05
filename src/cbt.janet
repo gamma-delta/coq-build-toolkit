@@ -29,15 +29,25 @@
   Named arguments are optional.
 
   id: String ID of the mod.
+
   name: Name of the mod. You can use CoQ formatting codes here.
+
   author: Your name. You can use CoQ formatting codes here.
+
   version: Mod version
+
   ---
+
   description: Short description of the mod. This is put into the Caves of Qud manifest.json.
+
   thumbnail: Path (RELATIVE TO THE BUILD FOLDER) of a preview image.
+
   tags: List of tags for the mod. Used for CoQ metadata.
+
   steam-id: ID of the mod on the Steam workshop. Leave blank until you have uploaded it.
+
   steam-visibility: I don't remember what this does
+
   load-order: Order for CoQ to load things in. Given that there's no way to coordinate this with *other* mods it's pretty useless but it's in the API for completeness' sake.
   ```
   [id name author version &named description thumbnail tags steam-id steam-visibility load-order]
@@ -63,6 +73,8 @@
 (defn set-build-dir
   ```
   Set the output directory.
+
+  By default this is `./build`
   ```
   [dir]
   (put *cbt* :build-dir
@@ -72,6 +84,8 @@
   ```
   Set the directory from which files are copied verbatim into the build dir.
   Use this for textures, .cs files, and any XML you don't want Janet to generate.
+
+  By default this is `./src/resources`
   ```
   [dir]
   (put *cbt* :resources-dir

@@ -3,7 +3,7 @@
 (varglobal '*cbt* @{:manifest nil
                     :file-generators @{}
                     :build-dir "./build"
-                    :resources-dir "./resources"
+                    :resources-dir "./src/resources"
                     :debug-output false})
 
 (defn dbg [fmt & args]
@@ -23,6 +23,7 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<QudLibPath>%s</QudLibPath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);%s/**</DefaultItemExcludes>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="$(QudLibPath)/0Harmony.dll" />

@@ -14,8 +14,17 @@
     (string/format csproj-template
                    id id # Assembly name and pkg id
                    (manifest :author) # Authors
-                   (*cbt* :qud-dlls)))
+                   (*cbt* :qud-dlls)
+                   # Ignore build directory so the langserver doesn't try to read both files  
+                   (*cbt* :build-dir)))
   (fs/write-file (string id ".csproj") formatted-csproj)
+
+  (def gitignore (string/join
+                   [(string "/" (*cbt* :build-dir))
+                    "/bin" "/obj"] # C# lang server folders
+                   "\n"))
+  (fs/write-file ".gitignore" gitignore)
+
   (fs/create-directories (*cbt* :resources-dir))
   (printf "Created new mod named %s" id))
 
