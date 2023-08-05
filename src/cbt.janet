@@ -37,9 +37,10 @@
   thumbnail: Path (RELATIVE TO THE BUILD FOLDER) of a preview image.
   tags: List of tags for the mod. Used for CoQ metadata.
   steam-id: ID of the mod on the Steam workshop. Leave blank until you have uploaded it.
+  steam-visibility: I don't remember what this does
   load-order: Order for CoQ to load things in. Given that there's no way to coordinate this with *other* mods it's pretty useless but it's in the API for completeness' sake.
   ```
-  [id name author version &named description thumbnail tags steam-id load-order]
+  [id name author version &named description thumbnail tags steam-id steam-visibility load-order]
   (if-not (nil? (get *cbt* :manifest))
     (error "Only call declare-mod once"))
 
@@ -47,6 +48,7 @@
   (default thumbnail nil)
   (default tags [])
   (default steam-id nil)
+  (default steam-visibility 2)
   (default load-order 0)
 
   (put *cbt* :manifest {:id id :name name
@@ -55,6 +57,7 @@
                         :description description
                         :tags tags
                         :steam-id steam-id
+                        :steam-visiblity (string steam-visibility)
                         :load-order load-order}))
 
 (defn set-build-dir

@@ -31,7 +31,26 @@
                  "Description" (manifest :description)
                  "Version" (manifest :version)
                  "Author" (manifest :author)
-                 "Tags" (string/join (manifest :tags) ",")})
+                 "Tags" (string/join (manifest :tags) ", ")})
+  (if-let [thumb (manifest :thumbnail)]
+    (put to-dump "PreviewImage" thumb))
+
+  (json/encode to-dump
+               "  " "\n"))
+
+(defn workshop-manifest-json []
+  (dbg "Writing workshop.json")
+  (def manifest (*cbt* :manifest))
+  (def workshop-id (and (*cbt* :steam-id)
+                        (do
+                          (dbg "No steam ID present, not writing manifest json")
+                          (return nil))))
+  (def to-dump @{"WorkshopId" workshop-id
+                 "Visibility" (manifest :steam-visibility)
+                 "Title" (manifest :name)
+                 "Description" (manifest :description)
+                 "Author" (manifest :author)
+                 "Tags" (string/join (manifest :tags) ", ")})
   (if-let [thumb (manifest :thumbnail)]
     (put to-dump "PreviewImage" thumb))
 
@@ -51,6 +70,8 @@
   (fs/recreate-directories build-dir)
 
   (write-resource-file "manifest.json" (coq-manifest-json))
+  (if-let [workshop-json (workshop-manifest-json)]
+    (write-resource-file "workshop.json" workshop-json))
   (copy-resources)
   (generate-files))
 

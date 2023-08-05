@@ -48,11 +48,11 @@
   [name inherit & parts]
   [:object
    (table :Name name
-          ;(if inherit [:Inherit inherit] []))
+          ;(if inherit [:Inherits inherit] []))
    ;parts])
 
 (defn part [name & kvs]
-  [:Part (table :Name name ;kvs)])
+  [:part (table :Name name ;kvs)])
 
 (defn render
   ```
