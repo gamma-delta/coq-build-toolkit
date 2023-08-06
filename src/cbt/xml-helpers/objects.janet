@@ -45,10 +45,10 @@
 
 (defn object
   "Pass `nil` for inherit to inherit nothing"
-  [name inherit merge & parts]
+  [name inherit load & parts]
   [:object
    (table :Name name
-          ;(if merge [:Merge merge] []))
+          ;(if load [:Load load] []))
           ;(if inherit [:Inherits inherit] []))
    ;parts])
 
