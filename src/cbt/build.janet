@@ -17,7 +17,7 @@
       (path/join
         dest
         # Copy things to .../dst/ instead of .../src/dst/
-        (string/slice path (- (length src) 1))))
+        (string/slice path (+ (length src) 1))))
     (dbg "Copying %m -> %m" path target-path)
     (fs/copy-file
       path
