@@ -96,11 +96,23 @@
         ;(if render-layer [:RenderLayer render-layer] [])))
 
 (defn description
-  "Create a <Description> part."
+  "Create a Description part."
   [desc]
   (part "Description"
         :Short desc))
 
+(defn commerce
+  "Create a Commerce part."
+  [price]
+  (part "Commerce"
+        :Value price))
+
 (defn tag
+  "Define a <tag> ... tag."
   [name value]
   [:tag {:Name name :Value value}])
+
+(defn removepart
+  "Define a <removepart> tag."
+  [part]
+  [:removepat {:Name part}])
