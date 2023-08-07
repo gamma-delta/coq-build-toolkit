@@ -43,19 +43,33 @@
     (errorf "The character %s was not a CP437 character" ch))
   out)
 
-(defn object
-  "Pass `nil` for inherit to inherit nothing"
+(defn object-raw
+  ```
+  Object creator with the most control.
+  ```
   [name inherit load & parts]
   [:object
    (table :Name name
-          ;(if load [:Load load] []))
+          ;(if load [:Load load] [])
           ;(if inherit [:Inherits inherit] []))
    ;parts])
 
-(defn new-object
-  "Pass `nil` for inherit to inherit nothing"
+(defn object
+  ```
+  Create a new object that doesn't merge into anything.
+
+  This just defines an object without a `Load="Merge"` property, so you
+  can also use this to clobber things. But probably don't.
+
+  Pass `nil` as `inherit` to inherit nothing.
+  ```
   [name inherit & parts]
-  (object name inherit nil))
+  (object-raw name inherit nil ;parts))
+
+(defn alter-object
+  "Define a blueprint that merges into the old object."
+  [name & parts]
+  (object-raw name nil "Merge" ;parts))
 
 (defn part [name & kvs]
   [:part (table :Name name ;kvs)])
@@ -65,8 +79,11 @@
   Create a <Render> part.
 
   `foreground` and `detail` are the two colors used to palette the texture.
+
   `background` is used for the background of the tile, or what's transparent in the texture. Generally leave this be.
+
   `cp437` is either a 1-char string or a 3-char octal number string for the text mode display.
+
   `render-layer` is how high in the world it displays.
   ```
   [name tile foreground detail &named background cp437 render-layer]
@@ -83,3 +100,7 @@
   [desc]
   (part "Description"
         :Short desc))
+
+(defn tag
+  [name value]
+  [:tag {:Name name :Value value}])

@@ -1,6 +1,6 @@
 (import ./cbt/xml :as xml :export true)
 (import ./cbt/colors :as colors :export true)
-(import ./cbt/xml-helpers/objects :as xml-helpers/objects)
+(import ./cbt/xml-helpers/objects :as xml-helpers/objects :export true)
 
 (import ./cbt/cli :as cli)
 (use ./cbt/globals)
