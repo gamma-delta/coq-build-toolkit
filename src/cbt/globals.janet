@@ -2,8 +2,8 @@
 
 (varglobal '*cbt* @{:manifest nil
                     :file-generators @{}
-                    :build-dir "./build"
-                    :resources-dir "./src/resources"
+                    :build-dir "build"
+                    :resources-dir "src/resources"
                     :debug-output false})
 
 (defn dbg [fmt & args]
