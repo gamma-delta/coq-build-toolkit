@@ -41,21 +41,23 @@
 (defn workshop-manifest-json []
   (dbg "Writing workshop.json")
   (def manifest (*cbt* :manifest))
-  (def workshop-id (and (*cbt* :steam-id)
-                        (do
-                          (dbg "No steam ID present, not writing manifest json")
-                          (return nil))))
-  (def to-dump @{"WorkshopId" workshop-id
-                 "Visibility" (manifest :steam-visibility)
-                 "Title" (manifest :name)
-                 "Description" (manifest :description)
-                 "Author" (manifest :author)
-                 "Tags" (string/join (manifest :tags) ", ")})
-  (if-let [thumb (manifest :thumbnail)]
-    (put to-dump "PreviewImage" thumb))
+  (if (has-key? manifest :steam-id)
+    (do
+      (def workshop-id (manifest :steam-id))
+      (def to-dump @{"WorkshopId" workshop-id
+                     "Visibility" (manifest :steam-visibility)
+                     "Title" (manifest :name)
+                     "Description" (manifest :description)
+                     "Author" (manifest :author)
+                     "Tags" (string/join (manifest :tags) ", ")})
+      (if-let [thumb (manifest :thumbnail)]
+        (put to-dump "PreviewImage" thumb))
 
-  (json/encode to-dump
-               "  " "\n"))
+      (json/encode to-dump
+                   "  " "\n"))
+    (do
+      (dbg "did not find steam ID, skipping workshop.json")
+      nil)))
 
 (defn copy-resources []
   (copy-tree resources-dir build-dir))
