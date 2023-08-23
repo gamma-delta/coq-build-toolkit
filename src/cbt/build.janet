@@ -26,14 +26,14 @@
 (defn coq-manifest-json []
   (dbg "Writing CoQ manifest")
   (def manifest (*cbt* :manifest))
-  (def to-dump @{"ID" (manifest :id)
-                 "Title" (manifest :name)
-                 "Description" (manifest :description)
-                 "Version" (manifest :version)
-                 "Author" (manifest :author)
-                 "Tags" (string/join (manifest :tags) ", ")})
-  (if-let [thumb (manifest :thumbnail)]
-    (put to-dump "PreviewImage" thumb))
+  (def to-dump (table "ID" (manifest :id)
+                      "Title" (manifest :name)
+                      "Description" (manifest :description)
+                      "Version" (manifest :version)
+                      "Author" (manifest :author)
+                      "Tags" (string/join (manifest :tags) ", ")
+                      ;(if-let [thumb (manifest :thumbnail)]
+                         ["PreviewImage" thumb] [])))
 
   (json/encode to-dump
                "  " "\n"))
@@ -44,14 +44,15 @@
   (if (has-key? manifest :steam-id)
     (do
       (def workshop-id (manifest :steam-id))
-      (def to-dump @{"WorkshopId" workshop-id
-                     "Visibility" (manifest :steam-visibility)
-                     "Title" (manifest :name)
-                     "Description" (manifest :description)
-                     "Author" (manifest :author)
-                     "Tags" (string/join (manifest :tags) ", ")})
-      (if-let [thumb (manifest :thumbnail)]
-        (put to-dump "PreviewImage" thumb))
+      (def to-dump (table "WorkshopId" workshop-id
+                          "Visibility" (manifest :steam-visibility)
+                          "ImagePath" (manifest :thumpnail)
+                          "Title" (manifest :name)
+                          "Description" (manifest :description)
+                          "Author" (manifest :author)
+                          "Tags" (string/join (manifest :tags) ", ")
+                          ;(if-let [thumb (manifest :thumbnail)]
+                             ["ImagePath" thumb] [])))
 
       (json/encode to-dump
                    "  " "\n"))

@@ -68,7 +68,8 @@
                         :tags tags
                         :steam-id steam-id
                         :steam-visiblity (string steam-visibility)
-                        :load-order load-order}))
+                        :load-order load-order
+                        :thumbnail thumbnail}))
 
 (defn set-build-dir
   ```
