@@ -107,6 +107,13 @@
   (part "Commerce"
         :Value price))
 
+(defn mutation
+  "Define a <mutation> part."
+  [name &opt level cap-override]
+  [:mutation {:Name name
+              ;(if level [:Level level] [])
+              ;(if cap-override [:CapOverride cap-override] [])}])
+
 (defn tag
   "Define a <tag> ... tag."
   [name value]
