@@ -122,4 +122,14 @@
 (defn removepart
   "Define a <removepart> tag."
   [part]
-  [:removepat {:Name part}])
+  [:removepart {:Name part}])
+
+(defn stat
+  "Define a <stat> tag."
+  [name value]
+  [:stat {:Name name :sValue value}])
+
+(defn inventoryobject
+  "Define an <inventoryobject> tag."
+  [blueprint number]
+  [:inventoryobject {:Blueprint blueprint :Number number}])
