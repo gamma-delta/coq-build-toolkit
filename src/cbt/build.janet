@@ -47,7 +47,7 @@
       (def to-dump (table "WorkshopId" workshop-id
                           "Visibility" (manifest :steam-visibility)
                           "ImagePath" (manifest :thumpnail)
-                          "Title" (manifest :name)
+                          "Title" (manifest :steam-name)
                           "Description" (manifest :description)
                           "Author" (manifest :author)
                           "Tags" (string/join (manifest :tags) ", ")
@@ -68,6 +68,11 @@
     (def content (thunk))
     (dbg "Generating file %m" path)
     (write-resource-file path content)))
+
+(defn do-hooks []
+  (loop [hook :in (*cbt* :hooks)]
+    (dbg "Calling hook %m" hook)
+    (hook *cbt*)))
 
 (defn build []
   (fs/recreate-directories build-dir)

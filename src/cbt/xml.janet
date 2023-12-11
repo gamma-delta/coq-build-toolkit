@@ -2,7 +2,8 @@
 # and by "based on" i mean "significant code theft"
 
 (defn default-formatting []
-  {:indent 2})
+  {:indent 2
+   :always-close-tags false})
 
 (defn escape [str]
   (let [str (string str)]
@@ -51,7 +52,9 @@
     (if (< count (- attr-count 1))
       (write! " ")))
 
-  (if (empty? children)
+  (if (and
+        (empty? children)
+        (not (formatting :always-close-tags)))
     (write! " />")
     (do
       (write! ">")

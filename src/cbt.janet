@@ -49,8 +49,12 @@
   steam-visibility: I don't remember what this does
 
   load-order: Order for CoQ to load things in. Given that there's no way to coordinate this with *other* mods it's pretty useless but it's in the API for completeness' sake.
+
+  steam-name: Name that gets put into the Steam workshop, where formatting codes don't work
   ```
-  [id name author version &named description thumbnail tags steam-id steam-visibility load-order]
+  [id name author version
+   &named
+   description thumbnail tags steam-id steam-name steam-visibility load-order]
   (if-not (nil? (get *cbt* :manifest))
     (error "Only call declare-mod once"))
 
@@ -60,6 +64,7 @@
   (default steam-id nil)
   (default steam-visibility 2)
   (default load-order 0)
+  (default steam-name name)
 
   (put *cbt* :manifest {:id id :name name
                         :author author
@@ -68,6 +73,7 @@
                         :tags tags
                         :steam-id steam-id
                         :steam-visiblity (string steam-visibility)
+                        :steam-name steam-name
                         :load-order load-order
                         :thumbnail thumbnail}))
 
@@ -92,6 +98,15 @@
   (put *cbt* :resources-dir
        (path/normalize dir)))
 
+(defn add-hook
+  ```
+  Set an arbitrary function to be run when the mod is built.
+
+  The function receives the CBT info table as its first and only argument.
+  ```
+  [hook]
+  (array/push (*cbt* :hooks) hook))
+
 (defn generate-file
   ```
   Stage a file to be generated.
@@ -111,6 +126,20 @@
   [path func &opt formatting]
   (default formatting (xml/default-formatting))
   (generate-file path (fn [] (xml/write (func) formatting))))
+
+(defn generate-object-blueprints
+  ```
+  Even-more-helper function that wraps the output of a function
+  in an `[:objects ...]` tag and generates it as "ObjectBlueprints.xml".
+
+  Note that CoQ doesn't actually need any particular file name; it just
+  looks for an `<objects>` root tag. But "ObjectBlueprints.xml" is
+  traditional.
+  ```
+  [func &opt formatting]
+  (generate-xml "ObjectBlueprints.xml"
+                (fn []
+                  [:objects ;(func)])))
 
 (defn set-debug-output
   "Turn on or off higher debugging output"

@@ -74,6 +74,11 @@
 (defn part [name & kvs]
   [:part (table :Name name ;kvs)])
 
+(defn tag*
+  "Define a tag with the given name and key-value pairs."
+  [tag & kvs]
+  [tag (table ;kvs)])
+
 (defn render
   ```
   Create a <Render> part.
@@ -116,8 +121,12 @@
 
 (defn tag
   "Define a <tag> ... tag."
-  [name value]
-  [:tag {:Name name :Value value}])
+  [name &opt value]
+  # Must use struct fn instead of literal here because of bug:
+  # it only accepts an even number of K-V pairs in a struct literal, even though
+  # it handles splatting a kv pair fine...
+  [:tag (struct :Name name
+                ;(if value [:Value value] []))])
 
 (defn removepart
   "Define a <removepart> tag."
@@ -133,3 +142,7 @@
   "Define an <inventoryobject> tag."
   [blueprint number]
   [:inventoryobject {:Blueprint blueprint :Number number}])
+
+(defn intproperty
+  [name val]
+  (tag* :intproperty :Name name :Value val))

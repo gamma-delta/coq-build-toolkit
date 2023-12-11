@@ -2,6 +2,7 @@
 
 (varglobal '*cbt* @{:manifest nil
                     :file-generators @{}
+                    :hooks @[]
                     :build-dir "build"
                     :resources-dir "src/resources"
                     :debug-output false})
