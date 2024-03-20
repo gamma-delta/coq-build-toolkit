@@ -35,6 +35,11 @@
                  ;(if load [:Load load] []))
    ;entries])
 
+(defn alter-group
+  [name & entries]
+  [:group (table :Name name)
+   ;entries])
+
 (defn items
   ```
   Define a group named "Items".

@@ -4,13 +4,6 @@
 (import spork/path)
 (import filesystem :as fs)
 
-(def- build-dir (*cbt* :build-dir))
-(def- resources-dir (*cbt* :resources-dir))
-
-(defn- write-resource-file [path contents]
-  (def path (path/join build-dir path))
-  (fs/write-file path contents))
-
 (defn- copy-tree [src dest]
   (loop [path :in (fs/list-all-files src)]
     (def target-path
@@ -23,35 +16,36 @@
       path
       target-path)))
 
-(defn coq-manifest-json []
+(defn- write-resource-file [cbt path contents]
+  (def path (path/join (cbt :build-dir) path))
+  (fs/write-file path contents))
+
+(defn coq-manifest-json [cbt]
   (dbg "Writing CoQ manifest")
-  (def manifest (*cbt* :manifest))
-  (def to-dump (table "ID" (manifest :id)
-                      "Title" (manifest :name)
-                      "Description" (manifest :description)
-                      "Version" (manifest :version)
-                      "Author" (manifest :author)
-                      "Tags" (string/join (manifest :tags) ", ")
-                      ;(if-let [thumb (manifest :thumbnail)]
+  (def to-dump (table "ID" (cbt :id)
+                      "Title" (cbt :name)
+                      "Description" (cbt :description)
+                      "Version" (cbt :version)
+                      "Author" (cbt :author)
+                      "Tags" (string/join (cbt :tags) ", ")
+                      ;(if-let [thumb (cbt :thumbnail)]
                          ["PreviewImage" thumb] [])))
 
   (json/encode to-dump
                "  " "\n"))
 
-(defn workshop-manifest-json []
+(defn workshop-manifest-json [cbt]
   (dbg "Writing workshop.json")
-  (def manifest (*cbt* :manifest))
   (if (has-key? manifest :steam-id)
     (do
       (def workshop-id (manifest :steam-id))
       (def to-dump (table "WorkshopId" workshop-id
-                          "Visibility" (manifest :steam-visibility)
-                          "ImagePath" (manifest :thumpnail)
-                          "Title" (manifest :steam-name)
-                          "Description" (manifest :description)
-                          "Author" (manifest :author)
-                          "Tags" (string/join (manifest :tags) ", ")
-                          ;(if-let [thumb (manifest :thumbnail)]
+                          "Visibility" (cbt :steam-visibility)
+                          "Title" (cbt :steam-name)
+                          "Description" (cbt :description)
+                          "Author" (cbt :author)
+                          "Tags" (string/join (cbt :tags) ", ")
+                          ;(if-let [thumb (cbt :thumbnail)]
                              ["ImagePath" thumb] [])))
 
       (json/encode to-dump
@@ -63,31 +57,30 @@
 (defn copy-resources []
   (copy-tree resources-dir build-dir))
 
-(defn generate-files []
-  (loop [[path thunk] :pairs (*cbt* :file-generators)]
+(defn generate-files [cbt]
+  (loop [[path thunk] :pairs (cbt :file-generators)]
     (def content (thunk))
     (dbg "Generating file %m" path)
-    (write-resource-file path content)))
+    (write-resource-file cbt path content)))
 
-(defn do-hooks []
-  (loop [hook :in (*cbt* :hooks)]
+(defn do-hooks [cbt]
+  (loop [hook :in (cbt :hooks)]
     (dbg "Calling hook %m" hook)
-    (hook *cbt*)))
+    (hook cbt)))
 
-(defn build []
+(defn build [cbt]
   (fs/recreate-directories build-dir)
 
-  (write-resource-file "manifest.json" (coq-manifest-json))
+  (write-resource-file cbt "manifest.json" (coq-manifest-json))
   (if-let [workshop-json (workshop-manifest-json)]
-    (write-resource-file "workshop.json" workshop-json))
-  (copy-resources)
-  (generate-files))
+    (write-resource-file cbt "workshop.json" workshop-json))
+  (copy-resources cbt)
+  (generate-files cbt))
 
-(defn install "Does not build, do that yourself"
-  []
-  (def manifest (*cbt* :manifest))
+(defn install "Does not build, do that yourself" [cbt]
+  (def manifest (cbt :manifest))
   (def mod-target (path/join
-                    (*cbt* :qud-mods-folder)
+                    (cbt :qud-mods-folder)
                     (manifest :id)))
   (dbg "installing mod to %s" mod-target)
   (fs/recreate-directories mod-target)
