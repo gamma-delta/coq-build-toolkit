@@ -127,7 +127,7 @@
         generate-file ,(partial generate-file cbt)
         generate-xml ,(partial generate-xml cbt)
         generate-object-blueprints ,(partial generate-object-blueprints cbt)]
-       ;bodies)))
+       (,jpm/rules/task task-name ;bodies))))
 
 ###
 
