@@ -1,17 +1,24 @@
 # Janet doesn't like circular deps, so declare the global var here. euhg.
 
-(varglobal '*cbt* @{:manifest nil
-                    :file-generators @{}
-                    :hooks @[]
-                    :build-dir "build"
-                    :resources-dir "src/resources"
-                    :debug-output false})
+(varglobal '*CBT-GLOBALS*
+  @{:debug-output false
+    :qud-dlls nil
+    :qud-mods-folder nil
+    :manifest @{}
 
-(defn dbg [fmt & args]
-  (if (*cbt* :debug-output)
-    (printf fmt ;args)))
+    :build-dir "./build"
+    :resources-dir "./src/resources"
+    :file-generators @{}
+    :hooks @[]})
 
-(def version "0.1.0")
+# TODO: is there a way to sync this from project.janet
+# perhaps with use of an ancillary file
+(def version "1.0.0")
+
+(defn dbg [text & bodies]
+  (if (*CBT-GLOBALS* :debug-output)
+    (apply printf text bodies)
+    nil))
 
 (def csproj-template ```
 <Project Sdk="Microsoft.NET.Sdk">

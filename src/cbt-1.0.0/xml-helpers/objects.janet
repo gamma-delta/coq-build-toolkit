@@ -46,10 +46,10 @@
     (errorf "The character %s was not a CP437 character" ch))
   out)
 
-(defn part [name & kvs]
+(defn- part [name & kvs]
   [:part (table :Name name ;kvs)])
 
-(defn render
+(defn- render
   ```
   Create a <Render> part.
 
@@ -70,27 +70,27 @@
         ;(if cp437 [:RenderString cp437] [])
         ;(if render-layer [:RenderLayer render-layer] [])))
 
-(defn description
+(defn- description
   "Create a Description part."
   [desc]
   (part "Description"
         :Short desc))
 
-(defn commerce
+(defn- commerce
   "Create a Commerce part."
   [price]
   (part "Commerce"
         :Value price))
 
-(defn mutation
-  "Define a <mutation> part."
+(defn- mutation
+  "Define a <mutation> tag."
   [name &opt level cap-override]
   [:mutation {:Name name
               ;(if level [:Level level] [])
               ;(if cap-override [:CapOverride cap-override] [])}])
 
-(defn tag
-  "Define a <tag> ... tag."
+(defn- tag
+  `Define a <tag Name="foo" Value="bar"> ... XML tag.`
   [name &opt value]
   # Must use struct fn instead of literal here because of bug:
   # it only accepts an even number of K-V pairs in a struct literal, even though
@@ -98,22 +98,22 @@
   [:tag (struct :Name name
                 ;(if value [:Value value] []))])
 
-(defn removepart
+(defn- removepart
   "Define a <removepart> tag."
   [part]
   [:removepart {:Name part}])
 
-(defn stat
+(defn- stat
   "Define a <stat> tag."
   [name value]
   [:stat {:Name name :sValue value}])
 
-(defn inventoryobject
+(defn- inventoryobject
   "Define an <inventoryobject> tag."
   [blueprint number]
   [:inventoryobject {:Blueprint blueprint :Number number}])
 
-(defn intproperty
+(defn- intproperty
   [name val]
   (tag* :intproperty :Name name :Value val))
 
@@ -131,5 +131,9 @@
 
 (defmacro object
   [name opts & bodies]
-  ~(let [part ,part]
+  ~(let [part ,part
+         render ,render description ,description commerce ,commerce
+         mutation ,mutation
+         tag ,tag removepart ,removepart
+         stat ,stat inventoryobject ,inventoryobject intproperty ,intproperty]
      ,(tuple object-inner name opts (apply array bodies))))

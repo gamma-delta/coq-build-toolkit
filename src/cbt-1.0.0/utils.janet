@@ -2,6 +2,16 @@
   [binds & bodies]
   ['let binds ;bodies])
 
+```
+(wib
+  [population ...
+   populations ...
+   table-pickone [
+     object ...]
+   table-pickmany [
+     object ...]])
+```
+
 (defn kv-args-with-tail
   ```
   From a list of arguments like:

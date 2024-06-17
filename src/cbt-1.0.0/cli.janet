@@ -1,43 +1,11 @@
-(use ../cbt/globals)
+(use ./globals)
 
-(import ../cbt/build :as build)
+(import ./build :as build)
 
 (import filesystem :as fs)
 
 (var- subcommands^ nil)
 (var- subcommands-table^ nil)
-
-(defn- sub-init [args]
-  (def manifest (*cbt* :manifest))
-  (def id (manifest :id))
-  (def formatted-csproj
-    (string/format csproj-template
-                   id id # Assembly name and pkg id
-                   (manifest :author) # Authors
-                   (*cbt* :qud-dlls)
-                   # Ignore build directory so the langserver doesn't try to read both files  
-                   (*cbt* :build-dir)))
-  (fs/write-file (string id ".csproj") formatted-csproj)
-
-  (def gitignore (string/join
-                   [(string "/" (*cbt* :build-dir))
-                    "/bin" "/obj"] # C# lang server folders
-                   "\n"))
-  (fs/write-file ".gitignore" gitignore)
-
-  (fs/create-directories (*cbt* :resources-dir))
-  (printf "Created new mod named %s" id))
-
-
-(defn- sub-build [args]
-  (build/build)
-  (print "Built " (get-in *cbt* [:manifest :id])))
-
-(defn- sub-install [args]
-  (build/build)
-  (build/install)
-  (print "Built and installed " (get-in *cbt* [:manifest :id])))
-
 
 (defn- sub-help [args]
   (printf ```
@@ -53,9 +21,39 @@
                  (printf "%s : %s" cmd-name (cmd :help))
                  (print (cmd :doc)))))
 
+(defn- sub-init [args]
+  (def manifest (*CBT-GLOBALS* :manifest))
+  (def id (manifest :id))
+  (def formatted-csproj
+    (string/format csproj-template
+                   id id # Assembly name and pkg id
+                   (manifest :author) # Authors
+                   (*CBT-GLOBALS* :qud-dlls)
+                   # Ignore build directory so the langserver doesn't try to read both files  
+                   (*CBT-GLOBALS* :build-dir)))
+  (fs/write-file (string id ".csproj") formatted-csproj)
+
+  (def gitignore (string/join
+                   [(string "/" (*CBT-GLOBALS* :build-dir))
+                    "/bin" "/obj"] # C# lang server folders
+                   "\n"))
+  (fs/write-file ".gitignore" gitignore)
+
+  (fs/create-directories (*CBT-GLOBALS* :resources-dir))
+  (printf "Created new mod named %s" id))
+
+
+(defn- sub-build [args]
+  (build/build *CBT-GLOBALS*)
+  (print "Built " (get-in *CBT-GLOBALS* [:manifest :id])))
+
+(defn- sub-install [args]
+  (build/build *CBT-GLOBALS*)
+  (build/install *CBT-GLOBALS*)
+  (print "Built and installed " (get-in *CBT-GLOBALS* [:manifest :id])))
 
 (defn- dump [args]
-  (printf "%M" *cbt*))
+  (printf "%M" *CBT-GLOBALS*))
 
 (def- subcommands
   [{:name "init"
@@ -90,7 +88,7 @@
     :help "Dump the CBT state to the terminal, for debugging purposes."
     :doc ```
          Usage: dump
-         Pretty-print the *cbt* variable using `%M`.
+         Pretty-print the *CBT-GLOBALS* variable using `%M`.
          ```
     :func dump}])
 (def- subcommands-table (tabseq [x :in subcommands]

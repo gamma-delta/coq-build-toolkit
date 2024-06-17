@@ -1,28 +1,3 @@
-(defn population-raw
-  ```
-  Define a population table.
-
-  Pass `nil` for `load` to not include a `Load` property.
-  ```
-  [name load & bodies]
-  [:population
-   (table :Name name ;(if load [:Load load] []))
-   ;bodies])
-
-(defn population
-  ```
-  Define a new population table.
-  ```
-  [name & bodies]
-  (population-raw name nil ;bodies))
-
-(defn alter-population
-  ```
-  Define an alteration to an existing population table, using `Load="Merge"`.
-  ```
-  [name & bodies]
-  (population-raw name :Merge ;bodies))
-
 (defn group-raw
   ```
   Define a group.
@@ -70,7 +45,7 @@
              :Number number
              ;(if chance [:Chance chance] []))])
 
-(defn table-one
+(defn- table-one
   ```
   Define a `table` in a `group` with the `pickone` style.
   ```
@@ -80,12 +55,26 @@
             :Number number
             :Weight weight)])
 
-(defn object-one
+(defn- object-one
   ```
   Define a `object` in a `group` with the `pickone` style.
   ```
   [name number weight]
-  [:object (table
-             :Blueprint name
-             :Number number
-             :Weight weight)])
+  (printf "object-one %M" [name number weight])
+  [:object {:Blueprint name
+            :Number number
+            :Weight weight}])
+
+###
+
+(defmacro- group-pickone
+  [name & bodies]
+  (let
+    [object object-one table table-one]
+    [:group {:Name name :Style :pickone} ;bodies]))
+
+(defmacro population
+  [name & bodies]
+  ~(do
+     (def group-pickone :macro ,group-pickone)
+     [:populations ,bodies]))

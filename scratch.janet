@@ -1,3 +1,5 @@
-(use ./src/cbt)
+(use ./src/cbt-1.0.0)
 
-(object :MyObj {} (part :Hello))
+(macex '(population "MyPopulation"
+                    (group-pickone "group-pick1"
+                                   (object "my-blueprint" "3-6" "30"))))

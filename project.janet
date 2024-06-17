@@ -1,6 +1,9 @@
+(def version "1.0.0")
+
 (declare-project
-  :name "coq-build-tools"
+  :name (string "coq-build-tools-" version)
   :description "Build tools for Caves of Qud"
+  :version version
 
   :dependencies [{:repo "https://github.com/janet-lang/spork"
                   :tag "1d31c6884c15c77d27de54109425bc930049f38d"}
@@ -10,4 +13,4 @@
                   :tag "main"}])
 
 (declare-source
-  :source ["src/cbt.janet" "src/cbt"])
+  :source [(string "src/cbt-" version)])

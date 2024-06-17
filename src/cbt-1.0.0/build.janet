@@ -1,4 +1,4 @@
-(use ../cbt/globals)
+(use ./globals)
 
 (import spork/json)
 (import spork/path)
@@ -10,7 +10,7 @@
       (path/join
         dest
         # Copy things to .../dst/ instead of .../src/dst/
-        (string/slice path (+ (length src) 1))))
+        (string/slice path (- (length src) 1))))
     (dbg "Copying %m -> %m" path target-path)
     (fs/copy-file
       path
@@ -21,20 +21,22 @@
   (fs/write-file path contents))
 
 (defn coq-manifest-json [cbt]
+  (def manifest (cbt :manifest))
   (dbg "Writing CoQ manifest")
-  (def to-dump (table "ID" (cbt :id)
-                      "Title" (cbt :name)
-                      "Description" (cbt :description)
-                      "Version" (cbt :version)
-                      "Author" (cbt :author)
-                      "Tags" (string/join (cbt :tags) ", ")
-                      ;(if-let [thumb (cbt :thumbnail)]
+  (def to-dump (table "ID" (manifest :id)
+                      "Title" (manifest :name)
+                      "Description" (manifest :description)
+                      "Version" (manifest :version)
+                      "Author" (manifest :author)
+                      "Tags" (string/join (manifest :tags) ", ")
+                      ;(if-let [thumb (manifest :thumbnail)]
                          ["PreviewImage" thumb] [])))
 
   (json/encode to-dump
                "  " "\n"))
 
 (defn workshop-manifest-json [cbt]
+  (def manifest (cbt :manifest))
   (dbg "Writing workshop.json")
   (if (has-key? manifest :steam-id)
     (do
@@ -54,8 +56,8 @@
       (dbg "did not find steam ID, skipping workshop.json")
       nil)))
 
-(defn copy-resources []
-  (copy-tree resources-dir build-dir))
+(defn copy-resources [cbt]
+  (copy-tree (cbt :resources-dir) (cbt :build-dir)))
 
 (defn generate-files [cbt]
   (loop [[path thunk] :pairs (cbt :file-generators)]
@@ -69,10 +71,10 @@
     (hook cbt)))
 
 (defn build [cbt]
-  (fs/recreate-directories build-dir)
+  (fs/recreate-directories (cbt :build-dir))
 
-  (write-resource-file cbt "manifest.json" (coq-manifest-json))
-  (if-let [workshop-json (workshop-manifest-json)]
+  (write-resource-file cbt "manifest.json" (coq-manifest-json cbt))
+  (if-let [workshop-json (workshop-manifest-json cbt)]
     (write-resource-file cbt "workshop.json" workshop-json))
   (copy-resources cbt)
   (generate-files cbt))
@@ -84,4 +86,4 @@
                     (manifest :id)))
   (dbg "installing mod to %s" mod-target)
   (fs/recreate-directories mod-target)
-  (copy-tree build-dir mod-target))
+  (copy-tree (cbt :build-dir) mod-target))
