@@ -1,28 +1,3 @@
-(defn population-raw
-  ```
-  Define a population table.
-
-  Pass `nil` for `load` to not include a `Load` property.
-  ```
-  [name load & bodies]
-  [:population
-   (table :Name name ;(if load [:Load load] []))
-   ;bodies])
-
-(defn population
-  ```
-  Define a new population table.
-  ```
-  [name & bodies]
-  (population-raw name nil ;bodies))
-
-(defn alter-population
-  ```
-  Define an alteration to an existing population table, using `Load="Merge"`.
-  ```
-  [name & bodies]
-  (population-raw name :Merge ;bodies))
-
 (defn group-raw
   ```
   Define a group.
@@ -33,6 +8,11 @@
   [:group (table :Name name
                  ;(if style [:Style style] [])
                  ;(if load [:Load load] []))
+   ;entries])
+
+(defn alter-group
+  [name & entries]
+  [:group (table :Name name)
    ;entries])
 
 (defn items
@@ -58,6 +38,7 @@
 (defn object-each
   ```
   Define a `object` in a `group` with the `pickeach` style.
+  Use this inside `(table-each ...)`
   ```
   [name number &opt chance]
   [:object (table
@@ -65,7 +46,7 @@
              :Number number
              ;(if chance [:Chance chance] []))])
 
-(defn table-one
+(defn- table-one
   ```
   Define a `table` in a `group` with the `pickone` style.
   ```
@@ -75,12 +56,13 @@
             :Number number
             :Weight weight)])
 
-(defn object-one
+(defn- object-one
   ```
   Define a `object` in a `group` with the `pickone` style.
+  Use this inside `(table-one ...)`
   ```
   [name number weight]
-  [:object (table
-             :Blueprint name
-             :Number number
-             :Weight weight)])
+  # (printf "object-one %M" [name number weight])
+  [:object {:Blueprint name
+            :Number number
+            :Weight weight}])

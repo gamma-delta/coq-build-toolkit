@@ -1,4 +1,7 @@
 (import ../colors :as colors)
+(use ../xml)
+(use ../utils)
+
 (import utf8)
 
 (defn utf8->cp437
@@ -43,41 +46,8 @@
     (errorf "The character %s was not a CP437 character" ch))
   out)
 
-(defn object-raw
-  ```
-  Object creator with the most control.
-  ```
-  [name inherit load & parts]
-  [:object
-   (table :Name name
-          ;(if load [:Load load] [])
-          ;(if inherit [:Inherits inherit] []))
-   ;parts])
-
-(defn object
-  ```
-  Create a new object that doesn't merge into anything.
-
-  This just defines an object without a `Load="Merge"` property, so you
-  can also use this to clobber things. But probably don't.
-
-  Pass `nil` as `inherit` to inherit nothing.
-  ```
-  [name inherit & parts]
-  (object-raw name inherit nil ;parts))
-
-(defn alter-object
-  "Define a blueprint that merges into the old object."
-  [name & parts]
-  (object-raw name nil "Merge" ;parts))
-
 (defn part [name & kvs]
   [:part (table :Name name ;kvs)])
-
-(defn tag*
-  "Define a tag with the given name and key-value pairs."
-  [tag & kvs]
-  [tag (table ;kvs)])
 
 (defn render
   ```
@@ -113,14 +83,14 @@
         :Value price))
 
 (defn mutation
-  "Define a <mutation> part."
+  "Define a <mutation> tag."
   [name &opt level cap-override]
   [:mutation {:Name name
               ;(if level [:Level level] [])
               ;(if cap-override [:CapOverride cap-override] [])}])
 
 (defn tag
-  "Define a <tag> ... tag."
+  `Define a <tag Name="foo" Value="bar"> ... XML tag.`
   [name &opt value]
   # Must use struct fn instead of literal here because of bug:
   # it only accepts an even number of K-V pairs in a struct literal, even though
@@ -146,3 +116,15 @@
 (defn intproperty
   [name val]
   (tag* :intproperty :Name name :Value val))
+
+# ===
+
+(defn object [name opts bodies]
+  (def inherit (get opts :inherit nil))
+  (def load (get opts :load nil))
+
+  [:object
+   (table :Name name
+          ;(if inherit [:Inherit inherit] [])
+          ;(if load [:Load load] []))
+   ;bodies])
