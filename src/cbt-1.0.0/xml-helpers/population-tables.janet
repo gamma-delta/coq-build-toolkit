@@ -38,6 +38,7 @@
 (defn object-each
   ```
   Define a `object` in a `group` with the `pickeach` style.
+  Use this inside `(table-each ...)`
   ```
   [name number &opt chance]
   [:object (table
@@ -58,23 +59,10 @@
 (defn- object-one
   ```
   Define a `object` in a `group` with the `pickone` style.
+  Use this inside `(table-one ...)`
   ```
   [name number weight]
-  (printf "object-one %M" [name number weight])
+  # (printf "object-one %M" [name number weight])
   [:object {:Blueprint name
             :Number number
             :Weight weight}])
-
-###
-
-(defmacro- group-pickone
-  [name & bodies]
-  (let
-    [object object-one table table-one]
-    [:group {:Name name :Style :pickone} ;bodies]))
-
-(defmacro population
-  [name & bodies]
-  ~(do
-     (def group-pickone :macro ,group-pickone)
-     [:populations ,bodies]))

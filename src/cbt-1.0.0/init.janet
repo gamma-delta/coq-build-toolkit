@@ -1,32 +1,12 @@
-(import ./xml :as xml :export true)
 (import ./colors :as colors :export true)
-(import ./xml-helpers/objects :as xml-helpers/objects)
+(import ./xml :as xml :export true)
+(import ./xml-helpers/objects :as xml-helpers/objects :export true)
 (import ./xml-helpers/population-tables :as xml-helpers/population-tables :export true)
 
 (import ./cli :as cli)
 (import ./globals :prefix "")
 
 (import spork/path)
-(import jpm)
-
-(def object :macro xml-helpers/objects/object)
-(def population :macro xml-helpers/population-tables/population)
-
-(defn build-metadata
-  ```
-  Write down build metadata specific to your computer here.
-
-  If you are worried about your ability to make PRs to another person's mod without changing this value all the time, don't worry!
-  Use `git add -p .` and you can selectively add parts of your files,
-  so that the new build metadata stays on your local copy but isn't put into the PR.
-
-  If you're worried about your user name leaking, create a `secrets.janet` file,
-  define the metadata in there, `gitignore` it, and import it here.
-  ```
-  [&named qud-dlls qud-mods-folder build-dir]
-  (put *CBT-GLOBALS* :qud-dlls qud-dlls)
-  (put *CBT-GLOBALS* :qud-mods-folder qud-mods-folder))
-
 
 (defn set-debug-output
   "Turn on or off higher debugging output"
@@ -76,7 +56,17 @@
                            2)
         :steam-name (or steam-name name)
         :load-order (or load-order 0)
-        :thumbnail (or thumbnail nil)}))
+        :thumbnail (or thumbnail nil)})
+
+  # might as well load the env now, just in case they set it from the script?
+  (if-let [qud-dlls
+           (os/getenv "CBT_QUD_DLLS_FOLDER" nil)]
+    (put *CBT-GLOBALS* :qud-dlls qud-dlls)
+    (error "cbt requires the CBT_QUD_DLLS_FOLDER environment variable set to the location of all the Caves of Qud dlls. This replaces `(build-metadata)` from older versions of CBT"))
+  (if-let [qud-mods-folder
+           (os/getenv "CBT_QUD_MODS_FOLDER" nil)]
+    (put *CBT-GLOBALS* :qud-mods-folder qud-mods-folder)
+    (error "cbt requires the CBT_QUD_MODS_FOLDER environment variable set to where Caves of Qud loads local mods from. This replaces `(build-metadata)` from older versions of CBT")))
 
 (defn set-build-dir
   ```
@@ -118,20 +108,6 @@
   [path func &opt formatting]
   (default formatting (xml/default-formatting))
   (generate-file path (fn [] (xml/write (func) formatting))))
-
-(defn generate-object-blueprints
-  ```
-  Even-more-helper function that wraps the output of a function
-  in an `[:objects ...]` tag and generates it as "ObjectBlueprints.xml".
-
-  Note that CoQ doesn't actually need any particular file name; it just
-  looks for an `<objects>` root tag. But "ObjectBlueprints.xml" is
-  traditional.
-  ```
-  [func &opt formatting]
-  (generate-xml "ObjectBlueprints.xml"
-                (fn []
-                  [:objects ;(func)])))
 
 (defn set-debug-output
   "Turn on or off higher debugging output"
