@@ -119,7 +119,7 @@
 
 # ===
 
-(defn object [name opts bodies]
+(defn object [name opts & bodies]
   (def inherit (get opts :inherit nil))
   (def load (get opts :load nil))
 
