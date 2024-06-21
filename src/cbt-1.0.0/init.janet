@@ -61,11 +61,11 @@
   # might as well load the env now, just in case they set it from the script?
   (if-let [qud-dlls
            (os/getenv "CBT_QUD_DLLS_FOLDER" nil)]
-    (put *CBT-GLOBALS* :qud-dlls qud-dlls)
+    (put *CBT-GLOBALS* :qud-dlls (path/normalize qud-dlls))
     (error "cbt requires the CBT_QUD_DLLS_FOLDER environment variable set to the location of all the Caves of Qud dlls. This replaces `(build-metadata)` from older versions of CBT"))
   (if-let [qud-mods-folder
            (os/getenv "CBT_QUD_MODS_FOLDER" nil)]
-    (put *CBT-GLOBALS* :qud-mods-folder qud-mods-folder)
+    (put *CBT-GLOBALS* :qud-mods-folder (path/normalize qud-mods-folder))
     (error "cbt requires the CBT_QUD_MODS_FOLDER environment variable set to where Caves of Qud loads local mods from. This replaces `(build-metadata)` from older versions of CBT")))
 
 (defn set-build-dir
