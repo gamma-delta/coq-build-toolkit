@@ -1,13 +1,12 @@
 # Janet doesn't like circular deps, so declare the global var here. euhg.
 
 (varglobal '*CBT-GLOBALS*
-  @{:debug-output false
-    :qud-dlls nil
+  @{:qud-dlls nil
     :qud-mods-folder nil
     :manifest @{}
 
-    :build-dir "./build"
-    :resources-dir "./src/resources"
+    :build-dir "build"
+    :resources-dir "src/resources"
     :file-generators @{}
     :hooks @[]})
 
@@ -16,7 +15,8 @@
 (def version "1.0.0")
 
 (defn dbg [text & bodies]
-  (if (*CBT-GLOBALS* :debug-output)
+  (def dbg-on (os/getenv "CBT_DEBUG"))
+  (if (and dbg-on (not (empty? dbg-on)))
     (apply printf text bodies)
     nil))
 

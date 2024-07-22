@@ -34,7 +34,7 @@
   (fs/write-file (string id ".csproj") formatted-csproj)
 
   (def gitignore (string/join
-                   [(string "/" (*CBT-GLOBALS* :build-dir))
+                   [(*CBT-GLOBALS* :build-dir)
                     "/bin" "/obj"] # C# lang server folders
                    "\n"))
   (fs/write-file ".gitignore" gitignore)

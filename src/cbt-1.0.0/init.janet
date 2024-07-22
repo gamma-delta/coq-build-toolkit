@@ -43,7 +43,7 @@
 
   steam-name: Name that gets put into the Steam workshop, where formatting codes don't work
   ```
-  [id name author version mod-config
+  [id name author version
    &named
    description thumbnail tags steam-id steam-name steam-visibility load-order]
   (put *CBT-GLOBALS* :manifest

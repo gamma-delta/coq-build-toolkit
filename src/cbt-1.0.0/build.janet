@@ -10,7 +10,7 @@
       (path/join
         dest
         # Copy things to .../dst/ instead of .../src/dst/
-        (string/slice path (- (length src) 1))))
+        (string/slice path (+ (length src) 1))))
     (dbg "Copying %m -> %m" path target-path)
     (fs/copy-file
       path
@@ -42,12 +42,12 @@
     (do
       (def workshop-id (manifest :steam-id))
       (def to-dump (table "WorkshopId" workshop-id
-                          "Visibility" (cbt :steam-visibility)
-                          "Title" (cbt :steam-name)
-                          "Description" (cbt :description)
-                          "Author" (cbt :author)
-                          "Tags" (string/join (cbt :tags) ", ")
-                          ;(if-let [thumb (cbt :thumbnail)]
+                          "Visibility" (manifest :steam-visibility)
+                          "Title" (manifest :steam-name)
+                          "Description" (manifest :description)
+                          "Author" (manifest :author)
+                          "Tags" (string/join (manifest :tags) ", ")
+                          ;(if-let [thumb (manifest :thumbnail)]
                              ["ImagePath" thumb] [])))
 
       (json/encode to-dump

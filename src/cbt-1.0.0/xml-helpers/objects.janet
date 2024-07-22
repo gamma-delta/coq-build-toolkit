@@ -72,9 +72,9 @@
 
 (defn description
   "Create a Description part."
-  [desc]
+  [& descs]
   (part "Description"
-        :Short desc))
+        :Short (string ;descs)))
 
 (defn commerce
   "Create a Commerce part."
@@ -120,11 +120,7 @@
 # ===
 
 (defn object [name opts & bodies]
-  (def inherit (get opts :inherit nil))
-  (def load (get opts :load nil))
 
   [:object
-   (table :Name name
-          ;(if inherit [:Inherit inherit] [])
-          ;(if load [:Load load] []))
+   (merge {:Name name} opts)
    ;bodies])
